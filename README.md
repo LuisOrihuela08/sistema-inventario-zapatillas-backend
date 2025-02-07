@@ -14,6 +14,7 @@ El backend está desarrollado en **Spring Boot** y utiliza **PostgreSQL** como b
 
 ## Diagrama de Base de Datos
 El sistema cuenta con las siguientes entidades:
+[![bd.png](https://i.postimg.cc/TPt58HcL/bd.png)](https://postimg.cc/jWJSPcmt)
 
 ### Usuario
 Representa a los usuarios del sistema, quienes pueden registrar su propio inventario de zapatillas.
