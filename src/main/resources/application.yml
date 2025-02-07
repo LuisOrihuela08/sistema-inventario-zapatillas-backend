@@ -3,9 +3,9 @@ spring:
   application:
     name: sistema-inventario-zapatillas
   datasource:
-    password: postgres
+    password: ${DB_PASSWORD}
     url: jdbc:postgresql://localhost:5432/inventario_zapatillas
-    username: postgres
+    username: ${DB_USER}
   jpa:
     database: POSTGRESQL
     hibernate:
@@ -13,6 +13,8 @@ spring:
     properties:
       hibernate:
     show-sql: true
+  config:
+    import: optional:file:.env[.properties]
 
 #Esto es para evitar que salga todos los logs en la consola   
 logging:
@@ -23,7 +25,9 @@ logging:
 
 #Configuracion para Cloudinary
 cloudinary:
-  cloud_name: dvh3ychvs
-  api_key: 533137827331554
-  api_secret: 2fHvUQDWNl9VAerY6_0qLxnBqtA
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
+  
+  
   
