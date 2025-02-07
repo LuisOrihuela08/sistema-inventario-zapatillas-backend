@@ -1,0 +1,29 @@
+debug: true
+spring:
+  application:
+    name: sistema-inventario-zapatillas
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/inventario_zapatillas
+    username: postgres
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+    show-sql: true
+
+#Esto es para evitar que salga todos los logs en la consola   
+logging:
+  level:
+    root: INFO
+    org.springframework.boot.autoconfigure: ERROR
+
+
+#Configuracion para Cloudinary
+cloudinary:
+  cloud_name: dvh3ychvs
+  api_key: 533137827331554
+  api_secret: 2fHvUQDWNl9VAerY6_0qLxnBqtA
+  
