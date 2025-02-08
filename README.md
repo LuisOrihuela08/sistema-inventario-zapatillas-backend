@@ -64,8 +64,4 @@ Relaciona las zapatillas con los usuarios que las poseen.
 3. **Java 17** instalado.
 4. **Maven** para la gestión de dependencias.
 
-### Instalación
-1. Clona el repositorio:
-   ```sh
-   git clone https://github.com/LuisOrihuela08/sistema-inventario-zapatillas-backend.git
 
