@@ -12,6 +12,10 @@ import com.inventario.demo.entity.Rol;
 import com.inventario.demo.entity.Usuario;
 import com.inventario.demo.repository.RolRepository;
 import com.inventario.demo.repository.UsuarioRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,6 +49,12 @@ public class UsuarioService{
 	public List<Usuario> listUsuarios(){
 		//return usuarioRepository.findAll(Sort.by(Sort.Order.asc("usuario_id")));
 		return usuarioRepository.findAll();
+	}
+	
+	//Este metodo es para listar a los usuario por paginacion
+	public Page<Usuario> findAllUsuariosPaginados(int page, int size){
+		Pageable pageable = PageRequest.of(page, size);
+		return usuarioRepository.findAll(pageable);
 	}
 	
 	public Usuario save (Usuario usuario) {

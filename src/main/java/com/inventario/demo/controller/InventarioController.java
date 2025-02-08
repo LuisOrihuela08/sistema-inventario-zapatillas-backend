@@ -457,7 +457,7 @@ public class InventarioController {
 			    respuesta.put("Cantidad", cantidad);
 			});
 			
-			
+			logger.info("La marca mas comprada es: ",respuesta);
 			return ResponseEntity.ok(respuesta);
 			
 		} catch (UsernameNotFoundException e) {
@@ -473,7 +473,17 @@ public class InventarioController {
 			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
 		}
 	}
-	
+	// Listar con paginacion -- ROLE_ADMIN --En el frontend se esta utlizando este método
+		@GetMapping("/list/zapatillas")
+		public ResponseEntity<Page<Zapatilla>> findPageZapatillas(@RequestParam int page, @RequestParam int size) {
+			Page<Zapatilla> listPageZapatillas = zapatillaService.listPageZapatillas(page, size);
+			listPageZapatillas.forEach(imagen -> {
+				String nombreImagen = imagen.getImagen();// Asumiendo que es el nombre de la imagen
+				imagen.setImagen("/api-inventario/imagen-zapatilla/" + nombreImagen);
+			});
+			return new ResponseEntity<>(listPageZapatillas, HttpStatus.OK);
+		}
+		
 	// Zapatillas CRUD
 	// Listar sin paginacion -- ROLE_ADMIN
 	@GetMapping("/list-all/zapatillas")
@@ -482,16 +492,6 @@ public class InventarioController {
 		return new ResponseEntity<>(listAllZapatillas, HttpStatus.OK);
 	}
 
-	// Listar con paginacion -- ROLE_ADMIN
-	@GetMapping("/list/zapatillas")
-	public ResponseEntity<Page<Zapatilla>> findPageZapatillas(@RequestParam int page, @RequestParam int size) {
-		Page<Zapatilla> listPageZapatillas = zapatillaService.listPageZapatillas(page, size);
-		listPageZapatillas.forEach(imagen -> {
-			String nombreImagen = imagen.getImagen();// Asumiendo que es el nombre de la imagen
-			imagen.setImagen("/api-inventario/imagen-zapatilla/" + nombreImagen);
-		});
-		return new ResponseEntity<>(listPageZapatillas, HttpStatus.OK);
-	}
 
 	/*
 	 * Los siguientes endpoints quedan como ejemplo de como guardar un objeto y un

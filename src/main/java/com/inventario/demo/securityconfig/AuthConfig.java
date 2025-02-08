@@ -61,7 +61,7 @@ public class AuthConfig {
                 auth.requestMatchers("/api-usuario/add/usuario",
                                      "/api-usuario/token",
                                      "/api-usuario/validate").permitAll();              
-                auth.requestMatchers("/api-usuario/list/usuario",
+                auth.requestMatchers("/api-usuario/list-usuarios-paginados",
                 					 "/api-inventario/list-all/inventario",
                                      "/api-inventario/list/inventario",
                                      "/api-inventario/list-all/zapatillas",
