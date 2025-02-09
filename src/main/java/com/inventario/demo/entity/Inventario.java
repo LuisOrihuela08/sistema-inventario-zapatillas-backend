@@ -45,9 +45,13 @@ public class Inventario {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "estado_id")
+	private Estado estado;
 
 	public Inventario(int cantidad, double precio, Date fecha_compra, String comentario, Zapatilla zapatilla,
-			Usuario usuario) {
+			Usuario usuario, Estado estado) {
 		super();
 		this.cantidad = cantidad;
 		this.precio = precio;
@@ -56,6 +60,7 @@ public class Inventario {
 		this.zapatilla = zapatilla;
 		this.usuario = usuario;
 		this.zapatilla = zapatilla;
+		this.estado = estado;
 	}
 	
 }

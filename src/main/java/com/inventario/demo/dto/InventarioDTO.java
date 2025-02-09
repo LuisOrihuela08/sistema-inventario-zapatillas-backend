@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inventario.demo.entity.Estado;
 import com.inventario.demo.entity.Usuario;
 import com.inventario.demo.entity.Zapatilla;
 
@@ -32,5 +33,8 @@ public class InventarioDTO {
 
     // Imagen de la zapatilla
     private MultipartFile imagen;
+    
+    //Atributo de Estado
+    private int estado_id; 
 
 }

@@ -35,12 +35,13 @@ public class Zapatilla {
 	private String colorway;
 	private String materiales;
 	private String imagen;
+	private String colaboracion;
 	
 	@OneToMany(mappedBy = "zapatilla")
 	@JsonIgnore
 	private List<Inventario> inventario;
 
-	public Zapatilla(String marca, String silueta, double talla, String colorway, String materiales, String imagen) {
+	public Zapatilla(String marca, String silueta, double talla, String colorway, String materiales, String imagen, String colaboracion) {
 		super();
 		this.marca = marca;
 		this.silueta = silueta;
@@ -48,6 +49,7 @@ public class Zapatilla {
 		this.colorway = colorway;
 		this.materiales = materiales;
 		this.imagen = imagen;
+		this.colaboracion = colaboracion;
 	}
 	
 }

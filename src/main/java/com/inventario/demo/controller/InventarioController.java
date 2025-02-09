@@ -28,9 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.inventario.demo.dto.InventarioDTO;
 import com.inventario.demo.dto.ZapatillaDTO;
+import com.inventario.demo.entity.Estado;
 import com.inventario.demo.entity.Inventario;
 import com.inventario.demo.entity.Usuario;
 import com.inventario.demo.entity.Zapatilla;
+import com.inventario.demo.service.EstadoService;
 import com.inventario.demo.service.InventarioService;
 import com.inventario.demo.service.UsuarioService;
 import com.inventario.demo.service.ZapatillaService;
@@ -54,6 +56,9 @@ public class InventarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private EstadoService estadoService;
 
 	// Inventario CRUD
 	// Listar sin paginacion -- ROLE_ADMIN
@@ -95,7 +100,9 @@ public class InventarioController {
 	// -- ROLE_ADMIN y ROLE_USER
 	@PostMapping("/add/inventario")
 	public ResponseEntity<?> addInventario(@ModelAttribute InventarioDTO inventarioDTO,
-			@RequestParam("imagen") MultipartFile imagen, Authentication authentication) {
+										   @RequestParam("imagen") MultipartFile imagen, 
+										   Authentication authentication) {
+		
 		try {
 			// Obtener usuario autenticado
 			String username = authentication.getName();
@@ -114,6 +121,10 @@ public class InventarioController {
 			zapatilla.setMateriales(inventarioDTO.getMateriales());
 			zapatilla.setImagen(imagenURL);
 
+			//Ahora obtenemos el id de un estado que se le va asignar a un Inventario
+			Estado estado = estadoService.findById(inventarioDTO.getEstado_id()).orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+			
+					
 			// Crear inventario
 			Inventario inventario = new Inventario();
 			inventario.setCantidad(inventarioDTO.getCantidad());
@@ -122,6 +133,7 @@ public class InventarioController {
 			inventario.setFecha_compra(inventarioDTO.getFecha_compra());
 			inventario.setZapatilla(zapatilla);
 			inventario.setUsuario(usuario);
+			inventario.setEstado(estado);
 
 			inventarioService.save(inventario);
 			logger.info("Inventario creado exitosamente");
@@ -191,6 +203,10 @@ public class InventarioController {
 			zapatilla.setColorway(inventarioDTO.getColorway());
 			zapatilla.setMateriales(inventarioDTO.getMateriales());
 
+			//Ahora obtenemos el id de un estado que se le va asignar a un Inventario
+			Estado estado = estadoService.findById(inventarioDTO.getEstado_id()).orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+			
+			
 			// Y por ultimo actualizamos los atributos del inventario
 			inventario.setCantidad(inventarioDTO.getCantidad());
 			inventario.setPrecio(inventarioDTO.getPrecio());
@@ -198,6 +214,7 @@ public class InventarioController {
 			inventario.setFecha_compra(inventarioDTO.getFecha_compra());
 			inventario.setZapatilla(zapatilla);
 			inventario.setUsuario(usuario);
+			inventario.setEstado(estado);
 
 			inventarioService.save(inventario);
 			logger.info("Inventario creado exitosamente");
@@ -491,6 +508,21 @@ public class InventarioController {
 		List<Zapatilla> listAllZapatillas = zapatillaService.listZapatillas();
 		return new ResponseEntity<>(listAllZapatillas, HttpStatus.OK);
 	}
+	
+	//Estado CRUD
+	@GetMapping("/list-all/estado")
+	public ResponseEntity<?> getAllEstados(){
+		
+		try {
+			List<Estado> listEstados = estadoService.listAllEstado();
+			logger.info("Listando todos los estados", listEstados);
+			return new ResponseEntity<>(listEstados, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			logger.error("Error al listar los estados", e.getMessage());
+			return new ResponseEntity<>("Error al listar los estados", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
 	/*
@@ -503,8 +535,13 @@ public class InventarioController {
 			@RequestParam("imagen") MultipartFile imagen) {
 
 		try {
-			Zapatilla zapatilla = new Zapatilla(zapatillaDTO.getMarca(), zapatillaDTO.getSilueta(),
-					zapatillaDTO.getTalla(), zapatillaDTO.getColorway(), zapatillaDTO.getMateriales(), null);// La
+			Zapatilla zapatilla = new Zapatilla(zapatillaDTO.getMarca(), 
+					                            zapatillaDTO.getSilueta(),
+					                            zapatillaDTO.getTalla(), 
+					                            zapatillaDTO.getColorway(), 
+					                            zapatillaDTO.getMateriales(), 
+					                            null,
+					                            zapatillaDTO.getColaboracion());// La
 																												// imagen
 																												// se
 																												// asignara
@@ -539,6 +576,7 @@ public class InventarioController {
 			zapatilla.setTalla(zapatillaDTO.getTalla());
 			zapatilla.setColorway(zapatillaDTO.getColorway());
 			zapatilla.setMateriales(zapatillaDTO.getMateriales());
+			zapatilla.setColaboracion(zapatillaDTO.getColaboracion());
 
 			zapatillaService.save(zapatilla, imagen);
 			return new ResponseEntity<>("Zapatilla actualizada", HttpStatus.OK);

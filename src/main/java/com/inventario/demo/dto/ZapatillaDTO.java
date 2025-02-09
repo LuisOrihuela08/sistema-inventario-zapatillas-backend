@@ -18,5 +18,6 @@ public class ZapatillaDTO {
 	private String colorway;
 	private String materiales;
 	private MultipartFile imagen;
+	private String colaboracion;
 	
 }
