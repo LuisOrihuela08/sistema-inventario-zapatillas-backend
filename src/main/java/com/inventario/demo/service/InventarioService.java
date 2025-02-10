@@ -32,6 +32,12 @@ public class InventarioService {
 		Pageable pageable = PageRequest.of(page, size);
 		return inventarioRepository.findAll(pageable);
 	}
+	
+	//Listar inventarios con paginacion pero por usuario
+	public Page<Inventario> listInventarioPageByUsuario(int page, int size, int usuario_id){
+		Pageable pageable = PageRequest.of(page, size);
+		return inventarioRepository.findAllInventarioByUsuario_Id(pageable, usuario_id);
+	}
 
 	public void save(Inventario inventario) {
 		inventarioRepository.save(inventario);

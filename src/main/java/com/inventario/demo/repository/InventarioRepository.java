@@ -22,6 +22,9 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 	
 	Page<Inventario> findAll (Pageable pageable);
 	
+	//Este método es para listar los inventarios con paginacion pero por usuario
+	Page<Inventario> findAllInventarioByUsuario_Id(Pageable pageable, int usuario_id);
+	
 	//Esto es para buscar el inventario por usuario
 	List<Inventario> findByUsuario_Id (int usuarioId);
 	

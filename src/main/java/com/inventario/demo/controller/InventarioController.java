@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -73,6 +74,46 @@ public class InventarioController {
 	public ResponseEntity<Page<Inventario>> findPageInventario(@RequestParam int page, @RequestParam int size) {
 		Page<Inventario> listPageInventario = inventarioService.listPageInventario(page, size);
 		return new ResponseEntity<>(listPageInventario, HttpStatus.OK);
+	}
+	
+	//Este método es el que se esta usando en el frontend ya que lista con paginacion
+	//Además tambien muestra los inventario por usuario
+	@GetMapping("/inventario-usuario-page")
+	public ResponseEntity<?> getInventarioPageByUsuario(@RequestParam int page,
+														@RequestParam int size,
+														Authentication authentication){
+		try {
+			
+			String username = authentication.getName();
+			Optional<Usuario> optionalUsuario = usuarioService.obtenerUsuario(username);
+			if (optionalUsuario.isEmpty()) {
+				logger.error("Usuario no encontrado");
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			Usuario usuario = optionalUsuario.get();
+			
+			Page<Inventario> inventarioListPage = inventarioService.listInventarioPageByUsuario(page, size, usuario.getId());
+			
+			if (inventarioListPage.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "No se encontro inventario de este usuario"));
+			}
+						
+			logger.info("Inventario paginado encontrado del usuario: ", usuario);
+			return ResponseEntity.ok(inventarioListPage);
+			 
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED); // 401
+
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para realizar esta acción", HttpStatus.FORBIDDEN); // 403
+
+		} catch (Exception e) {
+			logger.error("Error desconocido al crear inventario", e);
+			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
+		}
 	}
 
 	// Listar por inventario por usuario -- ROLE_ADMIN y ROLE_USER
