@@ -3,6 +3,7 @@ package com.inventario.demo.dto;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inventario.demo.entity.Usuario;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,11 @@ public class UsuarioDTO {
 	private Date fecha_nac;
 	private boolean admin;
 	
+	public UsuarioDTO(Usuario usuario) {
+        this.username = usuario.getUsername();
+        this.nombre = usuario.getNombre();
+        this.apellido = usuario.getApellido();
+        this.correo = usuario.getCorreo();
+        this.fecha_nac = usuario.getFecha_nac();
+    }
 }

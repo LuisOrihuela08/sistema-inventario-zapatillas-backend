@@ -74,6 +74,7 @@ public class UsuarioService{
 		return roles;
 	}
 	
+	
 	public Optional<Usuario> getOne (int id){
 		return usuarioRepository.findById(id);
 	}

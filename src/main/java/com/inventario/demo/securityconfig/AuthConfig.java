@@ -66,7 +66,8 @@ public class AuthConfig {
                                      "/api-inventario/list/inventario",
                                      "/api-inventario/list-all/zapatillas",
                                      "/api-inventario/list/zapatillas").hasAnyAuthority("ROLE_ADMIN");     
-                auth.requestMatchers("/api-usuario/nombre-usuario").hasAnyAuthority("ROLE_USER");
+                auth.requestMatchers("/api-usuario/nombre-usuario",
+                					 "/api-usuario/usuario-perfil").hasAnyAuthority("ROLE_USER");
                 auth.requestMatchers("/api-inventario/**").authenticated();
                 
 

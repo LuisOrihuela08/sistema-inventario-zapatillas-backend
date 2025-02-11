@@ -142,6 +142,41 @@ public class UsuarioController {
 			return new ResponseEntity<>("Error en el servidor ", HttpStatus.INTERNAL_SERVER_ERROR);// 500
 		}
 	}
+	
+	//Este método es para obtener los datos del usuario autenticado
+	@GetMapping("/usuario-perfil")
+	public ResponseEntity<?> getPerfilUsuario (Authentication authentication){
+		
+		try {
+			String username = authentication.getName();
+			
+			Optional<Usuario> usuarioOptional = usuarioService.obtenerUsuario(username);
+			
+			if (usuarioOptional.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			
+			Usuario usuario = usuarioOptional.get();
+			UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+			Map<String, Object> usuarioMap = new HashMap<>();
+			usuarioMap.put("message", "Perfil del usuario obtenido con éxito");
+			usuarioMap.put("usuario", usuarioDTO);
+
+			logger.info("Perfil del usuario "+ usuarioDTO);
+			return new ResponseEntity<>(usuarioMap, HttpStatus.OK);
+			
+ 		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED);// 401
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para hacer esta petición", HttpStatus.FORBIDDEN); // 403
+		} catch (Exception e) {
+			logger.error("Error desconocido al encontrar el nombre", e);
+			return new ResponseEntity<>("Error en el servidor ", HttpStatus.INTERNAL_SERVER_ERROR);// 500
+		}
+	}
 
 	/*
 	 * //Aca me genera el token y me lo muestra en formato json
