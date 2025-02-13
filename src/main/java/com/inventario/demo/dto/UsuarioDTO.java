@@ -22,9 +22,12 @@ public class UsuarioDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Date fecha_nac;
 	private boolean admin;
+	//private int id;//esto es solo para el metodo de editar perfil
 	
 	public UsuarioDTO(Usuario usuario) {
+		//this.id = usuario.getId();
         this.username = usuario.getUsername();
+        this.password = usuario.getPassword();//Eso lo comento porque no quiero que se muestre porque se ve encriptado
         this.nombre = usuario.getNombre();
         this.apellido = usuario.getApellido();
         this.correo = usuario.getCorreo();

@@ -4,11 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventario.demo.dto.UsuarioDTO;
+import com.inventario.demo.entity.Inventario;
 import com.inventario.demo.entity.Usuario;
 import com.inventario.demo.service.UsuarioService;
 
@@ -43,6 +48,9 @@ public class UsuarioController {
 
 	// Esto es para mandar mensajes
 	private final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UsuarioService usuarioService;
@@ -86,24 +94,41 @@ public class UsuarioController {
 		return new ResponseEntity<>(usuarioService.save(usuario), HttpStatus.CREATED);
 	}
 
-	@PutMapping("/update/usuario/{id}")
-	public ResponseEntity<?> updateUser(@PathVariable("id") int id, @RequestBody UsuarioDTO usuarioDTO) {
-		Usuario usuario = usuarioService.getOne(id).get();
-		usuario.setUsername(usuarioDTO.getUsername());
-		usuario.setPassword(usuarioDTO.getPassword());
-		usuario.setNombre(usuarioDTO.getNombre());
-		usuario.setApellido(usuarioDTO.getApellido());
-		usuario.setCorreo(usuarioDTO.getCorreo());
-		usuario.setFecha_nac(usuarioDTO.getFecha_nac());
-		usuarioService.save(usuario);
-		return new ResponseEntity<>("Usuario Editado exitosamente", HttpStatus.OK);
-	}
-
+	//Este método es para eliminar usuarios, solo para el usuario con ROLE_ADMIN
 	@DeleteMapping("/delete/usuario/{id}")
-	public ResponseEntity<?> deleteUsuario(@PathVariable("id") int id) {
-		usuarioService.delete(id);
-		return new ResponseEntity<>("Usuario Elimnado", HttpStatus.OK);
+	public ResponseEntity<?> deleteUsuario(@PathVariable("id") int id,
+										   Authentication authentication) {
+		
+		try {
+			String username = authentication.getName();
+
+			Optional<Usuario> optionalUsuario = usuarioService.obtenerUsuario(username);
+
+			if (optionalUsuario.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			
+			usuarioService.deleteUsuario(id);
+			logger.info("Usuario eliminado por {}", optionalUsuario.get().getNombre());
+			return ResponseEntity.ok(Collections.singletonMap("message", "Usuario eliminado correctamente"));//Esto devuelve un json
+			//return new ResponseEntity<>("Usuario Elimnado", HttpStatus.OK); -> Esto retorna un texto plano (String)
+					
+			
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED);// 401
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para hacer esta petición", HttpStatus.FORBIDDEN); // 403
+		} catch (Exception e) {
+			logger.error("Error desconocido al encontrar el nombre", e);
+			return new ResponseEntity<>("Error en el servidor ", HttpStatus.INTERNAL_SERVER_ERROR);// 500
+		}
+		
 	}
+	
+	//
 
 	@GetMapping("/nombre-usuario")
 	public ResponseEntity<?> buscarNombreDeUsuariAutenticado(Authentication authentication) {
@@ -159,6 +184,7 @@ public class UsuarioController {
 			
 			Usuario usuario = usuarioOptional.get();
 			UsuarioDTO usuarioDTO = new UsuarioDTO(usuario);
+			
 			Map<String, Object> usuarioMap = new HashMap<>();
 			usuarioMap.put("message", "Perfil del usuario obtenido con éxito");
 			usuarioMap.put("usuario", usuarioDTO);

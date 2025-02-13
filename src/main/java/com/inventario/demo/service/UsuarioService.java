@@ -83,6 +83,19 @@ public class UsuarioService{
 		usuarioRepository.deleteById(id);
 	}
 	
+	//Método para eliminar un usuario y su llave foranea en user_roles
+	public void deleteUsuario(int usuario_id) {
+		Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuario_id);
+		if (usuarioOptional.isPresent()) {
+			Usuario usuario = usuarioOptional.get();
+			//Primero eliminar su id dentro de la tabla user_roles
+			usuarioRepository.deleteRolesByUserId(usuario_id);
+			//Y luego borramos al usuario de la tabla usuario
+			usuarioRepository.deleteById(usuario_id);
+			
+		}
+	}
+	
 	public Optional<Usuario> obtenerUsuario (String username) {
 		return usuarioRepository.findByUsername(username);
 	}
