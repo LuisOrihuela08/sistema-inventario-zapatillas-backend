@@ -1,7 +1,7 @@
 # sistema-inventario-zapatillas-backend
 
 ## Descripción
-Este repositorio contendrá todo el código del backend para el sistema de inventario de zapatillas.  
+Este repositorio contendrá todo el código del backend para el sistema de inventario de zapatillas, donde cada usuario podra gestionar su propio inventario. El usuario con el ROLE_ADMIN, tendra más opciones y permisos a diferencia de usuario con el ROLE_USER.  
 El backend está desarrollado en **Spring Boot** y utiliza **PostgreSQL** como base de datos, la cual está gestionada mediante un contenedor de **Docker**. Para la gestión de la base de datos se utiliza **DataGrip**.
 
 ## Tecnologías Utilizadas
@@ -15,7 +15,7 @@ El backend está desarrollado en **Spring Boot** y utiliza **PostgreSQL** como b
 
 ## Diagrama de Base de Datos
 El sistema cuenta con las siguientes entidades:
-[![bd.png](https://i.postimg.cc/TPt58HcL/bd.png)](https://postimg.cc/jWJSPcmt)
+[![bd.png](https://i.postimg.cc/0Nkrtczt/bd.png)](https://postimg.cc/SnPyRL78)
 
 ### Usuario
 Representa a los usuarios del sistema, quienes pueden registrar su propio inventario de zapatillas.
@@ -29,7 +29,7 @@ Representa a los usuarios del sistema, quienes pueden registrar su propio invent
 ### Rol
 Define los roles de los usuarios en el sistema.
 - `rol_id` (PK) - Identificador único del rol
-- `nombre` - Nombre del rol (ejemplo: Administrador, Usuario)
+- `nombre` - Nombre del rol (ejemplo: ROLE_ADMIN, ROLE_USER)
 
 ### Usuario_Rol
 Relación entre usuarios y roles.
@@ -42,10 +42,16 @@ Almacena la información de cada zapatilla registrada en el sistema.
 - `zapatilla_id` (PK) - Identificador único de la zapatilla
 - `marca` - Marca de la zapatilla
 - `silueta` - Modelo de la zapatilla
+- `colaboracion` - Marca colaborativa con la marca
 - `talla` - Talla de la zapatilla
 - `colorway` - Color de la zapatilla
 - `materiales` - Materiales de fabricación
 - `imagen` - URL de la imagen almacenada en Cloudinary
+
+### Estado
+Define los roles de los usuarios en el sistema.
+- `estado_id` (PK) - Identificador único del estado
+- `nombreEstado` - Nombre del estado (ejemplo: En uso, Desuso, Vendido)
 
 ### Inventario
 Relaciona las zapatillas con los usuarios que las poseen.
