@@ -133,6 +133,10 @@ public class ZapatillaService {
 		Optional<Zapatilla> optionalZapatilla = zapatillaRepository.findById(id);
 		return optionalZapatilla.orElse(null);
 	}
+	//Este método es para buscar por marca
+	public List<Zapatilla> findZapatillaByMarca(String marca){
+		return zapatillaRepository.findByMarca(marca);
+	}
 		
 	public void updateZapatilla(Zapatilla zapatilla, MultipartFile imagen) throws IOException {
 	    initializerCloudinary(); // Inicializamos Cloudinary

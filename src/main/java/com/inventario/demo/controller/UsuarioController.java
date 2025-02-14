@@ -203,6 +203,38 @@ public class UsuarioController {
 			return new ResponseEntity<>("Error en el servidor ", HttpStatus.INTERNAL_SERVER_ERROR);// 500
 		}
 	}
+	
+	//Método para encontrar un usuario por el nombre - ROLE_ADMIN
+	@GetMapping("/find/usuario-nombre-admin/{nombre}")
+	public ResponseEntity<?> findUsuarioByNombre(@PathVariable ("nombre") String nombre,
+												 Authentication authentication){
+		
+		try {
+			
+			String username = authentication.getName();
+			
+			Optional<Usuario> usuarioOptional = usuarioService.obtenerUsuario(username);
+			
+			if (usuarioOptional.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			
+			List<Usuario> usuarioEncontrado = usuarioService.findUsuarioByNombre(nombre);
+			logger.info("Usuarios(s) encontrado por su nombre");
+			return new ResponseEntity<List<Usuario>>(usuarioEncontrado, HttpStatus.OK);
+			
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED);// 401
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para hacer esta petición", HttpStatus.FORBIDDEN); // 403
+		} catch (Exception e) {
+			logger.error("Error desconocido al encontrar el nombre del Usuario", e);
+			return new ResponseEntity<>("Error en el servidor ", HttpStatus.INTERNAL_SERVER_ERROR);// 500
+		}
+	}
 
 	/*
 	 * //Aca me genera el token y me lo muestra en formato json

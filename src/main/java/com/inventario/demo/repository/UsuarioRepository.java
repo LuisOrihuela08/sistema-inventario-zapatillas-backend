@@ -1,6 +1,7 @@
 package com.inventario.demo.repository;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,4 +26,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	@Transactional
 	@Query(value = "DELETE FROM users_roles WHERE usuario_id = :usuario_id", nativeQuery = true)
 	void deleteRolesByUserId(@Param("usuario_id") int usuario_id);
+	
+	//Método para buscar un usuario por su nombre
+	List<Usuario> findUsuarioByNombre(String nombre);
 }

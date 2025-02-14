@@ -564,6 +564,39 @@ public class InventarioController {
 			return new ResponseEntity<>("Error al listar los estados", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	//Método para buscar zapatillas por la marca, este endpoint es para el user con ROLE_ADMIN
+	@GetMapping("/find/zapatilla-marca-admin/{marca}")
+	public ResponseEntity<?> getZapatillasByMarca(@PathVariable("marca") String marca,
+												  Authentication authentication){
+		
+		try {
+			String username = authentication.getName();
+
+			Optional<Usuario> optionalUsuario = usuarioService.obtenerUsuario(username);
+
+			if (optionalUsuario.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+
+			List<Zapatilla> listZapatillas = zapatillaService.findZapatillaByMarca(marca);
+			logger.info("Zapatillas encontradas por la marca del metodo getZapatillasByMarca");
+			return new ResponseEntity<List<Zapatilla>>(listZapatillas, HttpStatus.OK);
+			
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED); // 401
+
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para realizar esta acción", HttpStatus.FORBIDDEN); // 403
+
+		} catch (Exception e) {
+			logger.error("Error al obtener la zapatilla por la marca", e);
+			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
+		}
+		
+	}
 
 
 	/*

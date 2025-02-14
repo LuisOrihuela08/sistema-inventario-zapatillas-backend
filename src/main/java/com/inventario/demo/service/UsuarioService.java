@@ -96,6 +96,11 @@ public class UsuarioService{
 		}
 	}
 	
+	//Método para buscar un Usuario por nombre
+	public List<Usuario> findUsuarioByNombre(String nombre){
+		return usuarioRepository.findUsuarioByNombre(nombre);
+	}
+	
 	public Optional<Usuario> obtenerUsuario (String username) {
 		return usuarioRepository.findByUsername(username);
 	}
