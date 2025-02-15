@@ -1,0 +1,20 @@
+services:
+  sistema-inventario-backend:
+    container_name: sistema-inventario-backend
+    env_file:
+      - .env
+    image: sistema-inventario-backend
+    #depends_on: Esto ya no debido a que el contenedor postgres no se encuentra en este archivo y ya se encuentra ejecutandose
+     # - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - sistema-inventario
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/inventario_zapatillas
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+
+networks:
+  sistema-inventario:
+    external: true  # Usa una red ya creada manualmente

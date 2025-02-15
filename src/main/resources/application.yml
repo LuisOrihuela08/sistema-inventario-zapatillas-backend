@@ -4,7 +4,8 @@ spring:
     name: sistema-inventario-zapatillas
   datasource:
     password: ${DB_PASSWORD}
-    url: jdbc:postgresql://localhost:5432/inventario_zapatillas
+    #url: jdbc:postgresql://localhost:5432/inventario_zapatillas #Esto es de manera local
+    url: jdbc:postgresql://postgres:5432/inventario_zapatillas #Esto es para conectarse una vez dockerizado este proyecto
     username: ${DB_USER}
   jpa:
     database: POSTGRESQL
