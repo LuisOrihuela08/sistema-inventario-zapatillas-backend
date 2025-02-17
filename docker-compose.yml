@@ -15,6 +15,16 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
 
+  sistema-inventario-frontend:
+    container_name: sistema-inventario-frontend
+    image: sistema-inventario-frontend
+    depends_on:
+      - sistema-inventario-backend
+    ports:
+      - "80:80"
+    networks:
+      - sistema-inventario
+
 networks:
   sistema-inventario:
     external: true  # Usa una red ya creada manualmente
