@@ -1,5 +1,6 @@
 package com.inventario.demo.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,7 +19,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -34,7 +37,8 @@ public class Inventario {
 	private double precio;
 	private String comentario;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date fecha_compra;
+	private LocalDate fecha_compra;
+	//private Date fecha_compra;
 	
 	
 	
@@ -50,7 +54,7 @@ public class Inventario {
 	@JoinColumn(name = "estado_id")
 	private Estado estado;
 
-	public Inventario(int cantidad, double precio, Date fecha_compra, String comentario, Zapatilla zapatilla,
+	public Inventario(int cantidad, double precio, LocalDate fecha_compra, String comentario, Zapatilla zapatilla,
 			Usuario usuario, Estado estado) {
 		super();
 		this.cantidad = cantidad;

@@ -62,16 +62,18 @@ public class AuthConfig {
                                      "/api-usuario/token",
                                      "/api-usuario/validate").permitAll();              
                 auth.requestMatchers("/api-usuario/list-usuarios-paginados",
+                					"/api-usuario/list/usuario",
                 		             "/api-usuario/delete/usuario/{id}",
                 		             "/api-usuario/find/usuario-nombre-admin/{nombre}",
                 					 "/api-inventario/list-all/inventario",
                                      "/api-inventario/list/inventario",
                                      "/api-inventario/list-all/zapatillas",
-                                     "/api-inventario/list/zapatillas",
-                                     "/api-inventario/find/zapatilla-marca-admin/{marca}").hasAnyAuthority("ROLE_ADMIN");     
+                                     "/api-inventario/list/zapatillas").hasAnyAuthority("ROLE_ADMIN");     
                 auth.requestMatchers("/api-usuario/nombre-usuario",
                 					 "/api-usuario/usuario-perfil",
-                					 "/api-usuario/update-usuario-perfil").hasAnyAuthority("ROLE_USER");
+                					 "/api-usuario/update-usuario-perfil",
+                                     "/api-inventario/find/zapatilla-marca-admin/{marca}",
+                                     "/api-inventario/find/fecha/{anio}").hasAnyAuthority("ROLE_USER");
                 auth.requestMatchers("/api-inventario/**").authenticated();
                 
 

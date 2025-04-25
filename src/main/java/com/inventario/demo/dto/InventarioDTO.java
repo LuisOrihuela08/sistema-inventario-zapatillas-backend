@@ -1,5 +1,6 @@
 package com.inventario.demo.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +23,8 @@ public class InventarioDTO {
 	private double precio;
 	private String comentario;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	private Date fecha_compra;
+	private LocalDate fecha_compra;
+	//private Date fecha_compra;
 	
 	// Datos de la zapatilla
     private String marca;

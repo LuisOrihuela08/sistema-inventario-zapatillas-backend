@@ -22,6 +22,10 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 	
 	Page<Inventario> findAll (Pageable pageable);
 	
+	//Esto es para buscar por fecha (año) un inventario
+	@Query(value = "SELECT * FROM inventario WHERE EXTRACT(YEAR FROM fecha_compra) = :anio", nativeQuery = true)
+	List<Inventario> findByFechaCompra(@Param("anio") int anio, int usuarioId);
+	
 	//Este método es para listar los inventarios con paginacion pero por usuario
 	Page<Inventario> findAllInventarioByUsuario_Id(Pageable pageable, int usuario_id);
 	

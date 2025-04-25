@@ -42,8 +42,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200/", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS })//Esta URL es para pruebas de manera local
-@CrossOrigin(origins = "http://localhost", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS })//Esto es para aceptar peticiones desde el frontend dockerizado el puerto 80
+@CrossOrigin(origins = "http://localhost:4200/", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS })//Esta URL es para pruebas de manera local
+//@CrossOrigin(origins = "http://localhost", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS })//Esto es para aceptar peticiones desde el frontend dockerizado el puerto 80
 @RequestMapping("/api-inventario")
 public class InventarioController {
 
@@ -178,6 +178,7 @@ public class InventarioController {
 
 			inventarioService.save(inventario);
 			logger.info("Inventario creado exitosamente");
+			logger.info("Inventario nuevo: {}", inventario);
 			return new ResponseEntity<>(inventario, HttpStatus.CREATED);
 
 		} catch (UsernameNotFoundException e) {
@@ -258,7 +259,8 @@ public class InventarioController {
 			inventario.setEstado(estado);
 
 			inventarioService.save(inventario);
-			logger.info("Inventario creado exitosamente");
+			logger.info("Inventario actualizado exitosamente");
+			logger.info("Datos actualizados: {}", inventario);
 			return new ResponseEntity<>(inventario, HttpStatus.OK);
 
 		} catch (UsernameNotFoundException e) {
@@ -342,8 +344,49 @@ public class InventarioController {
 			if (listInventario.isEmpty()) {
 				return new ResponseEntity<>("Marca no encontrada", HttpStatus.BAD_REQUEST);
 			}
+			logger.info("Inventarios encontrados por marca OK!");
 			return new ResponseEntity<List<Inventario>>(listInventario, HttpStatus.OK);
 
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED); // 401
+
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para realizar esta acción", HttpStatus.FORBIDDEN); // 403
+
+		} catch (Exception e) {
+			logger.error("Error desconocido al editar inventario", e);
+			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
+		}
+	}
+	
+	//Método para buscar inventario por fecha_compra (año)
+	@GetMapping("/find/fecha/{anio}")
+	public ResponseEntity<?> getInventarioByFechaCompraAnio(@PathVariable("anio") int anio, Authentication authentication){
+		
+		try {
+			
+			String username = authentication.getName();
+			
+			Optional<Usuario> optionalUsuario = usuarioService.obtenerUsuario(username);
+			
+			if (optionalUsuario.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			
+			Usuario usuario = optionalUsuario.get();
+			
+			List<Inventario> listInventario = inventarioService.findInventarioByFechaAnio(anio, usuario.getId());
+			
+			if (listInventario.isEmpty()) {
+				return new ResponseEntity<>(Map.of("message","No hay inventario con ese año de fecha"), HttpStatus.BAD_REQUEST);
+			}
+			
+			logger.info("Inventarios encontrados por año OK!");
+			return new ResponseEntity<>(listInventario, HttpStatus.OK);			
+			
 		} catch (UsernameNotFoundException e) {
 			logger.error("Error: Usuario no encontrado", e);
 			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED); // 401

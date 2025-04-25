@@ -58,6 +58,11 @@ public class InventarioService {
 	public List<Inventario> buscarZapatillaPorMarcaYUsuario(String marca, int usuarioId) {
 		return inventarioRepository.findByZapatillaMarcaAndUsuarioId(marca, usuarioId);
 	}
+	
+	//Método para buscar por fecha (año) un inventario
+	public List<Inventario> findInventarioByFechaAnio(int anio, int usuarioId){
+		return inventarioRepository.findByFechaCompra(anio, usuarioId);
+	}
 
 	// Método para contar los inventario que tiene un usuario
 	public int countInventarioByUsuarioId(int usuario_id) {

@@ -2,9 +2,19 @@ debug: true
 spring:
   application:
     name: sistema-inventario-zapatillas
+  profiles:
+    active:
+    - dev    
+    
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import: optional:file:.env[.properties] 
+     
   datasource:
     password: ${DB_PASSWORD}
-    #url: jdbc:postgresql://localhost:5432/inventario_zapatillas #Esto es de manera local
     url: jdbc:postgresql://postgres:5432/inventario_zapatillas #Esto es para conectarse una vez dockerizado este proyecto
     username: ${DB_USER}
   jpa:
@@ -13,9 +23,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-    show-sql: true
-  config:
-    import: optional:file:.env[.properties]
+    show-sql: true    
 
 #Esto es para evitar que salga todos los logs en la consola   
 logging:
@@ -29,6 +37,36 @@ cloudinary:
   cloud_name: ${CLOUDINARY_CLOUD_NAME}
   api_key: ${CLOUDINARY_API_KEY}
   api_secret: ${CLOUDINARY_API_SECRET}
-  
-  
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: optional:file:.env[.properties] 
+     
+  datasource:
+    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/inventario_zapatillas #Esto es de manera local
+    username: ${DB_USER}
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+    show-sql: true    
+
+#Esto es para evitar que salga todos los logs en la consola   
+logging:
+  level:
+    root: INFO
+    org.springframework.boot.autoconfigure: ERROR
+
+
+#Configuracion para Cloudinary
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
   

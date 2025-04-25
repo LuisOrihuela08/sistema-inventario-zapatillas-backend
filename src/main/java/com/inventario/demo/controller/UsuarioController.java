@@ -42,8 +42,8 @@ import com.inventario.demo.service.UsuarioService;
 
 @RestController
 @RequestMapping("/api-usuario")
-//@CrossOrigin(origins = "http://localhost:4200", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS }) //Esta URL es para pruebas de manera local
-@CrossOrigin(origins = "http://localhost", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS })//Esto es para aceptar peticiones desde el frontend dockerizado el puerto 80
+@CrossOrigin(origins = "http://localhost:4200", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS }) //Esta URL es para pruebas de manera local
+//@CrossOrigin(origins = "http://localhost", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,RequestMethod.DELETE, RequestMethod.OPTIONS })//Esto es para aceptar peticiones desde el frontend dockerizado el puerto 80
 public class UsuarioController {
 
 	// Esto es para mandar mensajes
