@@ -7,6 +7,7 @@ El backend está desarrollado en **Spring Boot** y utiliza **PostgreSQL** como b
 ## Tecnologías Utilizadas
 - **Spring Boot 3.4.0**
 - **Spring Security**
+- **Java 17**
 - **PostgreSQL**
 - **Docker**
 - **DataGrip**
