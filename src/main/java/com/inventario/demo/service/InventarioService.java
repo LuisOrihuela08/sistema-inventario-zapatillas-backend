@@ -37,8 +37,17 @@ public class InventarioService {
 	}
 	
 	//Listar inventarios con paginacion pero por usuario
-	public Page<Inventario> listInventarioPageByUsuario(int page, int size, int usuario_id){
-		Pageable pageable = PageRequest.of(page, size);
+	public Page<Inventario> listInventarioPageByUsuario(int page, int size, int usuario_id, String orden){
+		//Esto es para ordenar tambien por precio
+		Sort sort = Sort.by("precio");
+		
+		if ("desc".equalsIgnoreCase(orden)) {
+			sort = sort.descending();
+		} else {
+			sort = sort.ascending();
+		}
+		
+		Pageable pageable = PageRequest.of(page, size, sort);
 		return inventarioRepository.findAllInventarioByUsuario_Id(pageable, usuario_id);
 	}
 
@@ -74,6 +83,7 @@ public class InventarioService {
 	
 	//Método para ordenar inventarios por precio
 	public List<Inventario> orderInventarioByPrecio(int usuarioId, String orden){
+			
 		Sort sort = orden.equalsIgnoreCase("desc") ? Sort.by("precio").descending() : Sort.by("precio").ascending();
 		return inventarioRepository.findInventarioByUsuarioId(usuarioId, sort);
 	}

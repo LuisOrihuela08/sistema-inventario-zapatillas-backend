@@ -81,6 +81,7 @@ public class InventarioController {
 	@GetMapping("/inventario-usuario-page")
 	public ResponseEntity<?> getInventarioPageByUsuario(@RequestParam int page,
 														@RequestParam int size,
+														@RequestParam String orden,
 														Authentication authentication){
 		try {
 			
@@ -92,7 +93,7 @@ public class InventarioController {
 			}
 			Usuario usuario = optionalUsuario.get();
 			
-			Page<Inventario> inventarioListPage = inventarioService.listInventarioPageByUsuario(page, size, usuario.getId());
+			Page<Inventario> inventarioListPage = inventarioService.listInventarioPageByUsuario(page, size, usuario.getId(), orden);
 			
 			if (inventarioListPage.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

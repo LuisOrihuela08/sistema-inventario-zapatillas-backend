@@ -23,6 +23,7 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 	//Esto es para eliminar un inventario de un usuario
 	void deleteInventarioByIdAndUsuarioId(int inventario_id, int usuario_id);
 	
+	//Listar inventario con paginacion
 	Page<Inventario> findAll (Pageable pageable);
 	
 	//Esto es para buscar por fecha (año) un inventario
@@ -40,6 +41,7 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 	List<Inventario> findInventarioByUsuarioId(int usuarioId, Sort sort);
 	
 	//Este método es para listar los inventarios con paginacion pero por usuario
+	//Y es el que usa desde el sistema, en el frontend
 	Page<Inventario> findAllInventarioByUsuario_Id(Pageable pageable, int usuario_id);
 	
 	//Esto es para buscar el inventario por usuario
