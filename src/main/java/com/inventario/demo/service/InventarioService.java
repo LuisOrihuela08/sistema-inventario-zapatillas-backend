@@ -1,5 +1,7 @@
 package com.inventario.demo.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,11 +62,27 @@ public class InventarioService {
 		return inventarioRepository.findByZapatillaMarcaAndUsuarioId(marca, usuarioId);
 	}
 	
+	//Método para filtrar inventario entre fechas
+	public List<Inventario> findInventarioByFechaCompraBetween (String fechaInicioString, String fechaFinString, int usuarioId){
+		LocalDate fechaInicio = LocalDate.parse(fechaInicioString);
+		LocalDate fechaFin = LocalDate.parse(fechaFinString);//Dejandolo asi, toma hasta la fecha fin que se le asigne, es decir: fechaInicio <= fecha_compra <= fechaFin
+		
+		//Realizamos la consulta al repo
+		return inventarioRepository.buscarPorFechasYUsuario(fechaInicio, fechaFin, usuarioId);
+		
+	}
+	
+	//Método para ordenar inventarios por precio
+	public List<Inventario> orderInventarioByPrecio(int usuarioId, String orden){
+		Sort sort = orden.equalsIgnoreCase("desc") ? Sort.by("precio").descending() : Sort.by("precio").ascending();
+		return inventarioRepository.findInventarioByUsuarioId(usuarioId, sort);
+	}
+	/*
 	//Método para buscar por fecha (año) un inventario
 	public List<Inventario> findInventarioByFechaAnio(int anio, int usuarioId){
 		return inventarioRepository.findByFechaCompra(anio, usuarioId);
 	}
-
+	*/
 	// Método para contar los inventario que tiene un usuario
 	public int countInventarioByUsuarioId(int usuario_id) {
 		return inventarioRepository.countInventarioByUsuarioId(usuario_id);

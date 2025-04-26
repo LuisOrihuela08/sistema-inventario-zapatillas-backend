@@ -1,9 +1,12 @@
 package com.inventario.demo.repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,8 +26,18 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 	Page<Inventario> findAll (Pageable pageable);
 	
 	//Esto es para buscar por fecha (año) un inventario
-	@Query(value = "SELECT * FROM inventario WHERE EXTRACT(YEAR FROM fecha_compra) = :anio", nativeQuery = true)
-	List<Inventario> findByFechaCompra(@Param("anio") int anio, int usuarioId);
+	//Por el momento no esta usando, ya que implemente filtrar inventarios entre fechas
+	//@Query(value = "SELECT * FROM inventario WHERE EXTRACT(YEAR FROM fecha_compra) = :anio", nativeQuery = true)
+	//List<Inventario> findByFechaCompra(@Param("anio") int anio, int usuarioId);
+	
+	//Buscar inventario por filtro entre fechas
+	@Query("SELECT i FROM Inventario i WHERE i.fecha_compra BETWEEN :inicio AND :fin")
+	List<Inventario> buscarPorFechasYUsuario (@Param("inicio") LocalDate fechaInicio, 
+															@Param("fin") LocalDate fechaFin, 
+															int usuarioId);
+	
+	//Ordenar inventario por precio descendente y ascendente
+	List<Inventario> findInventarioByUsuarioId(int usuarioId, Sort sort);
 	
 	//Este método es para listar los inventarios con paginacion pero por usuario
 	Page<Inventario> findAllInventarioByUsuario_Id(Pageable pageable, int usuario_id);
@@ -65,5 +78,6 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 		""")
 		List<Object[]> obtenerMarcaMasCompradaPorUsuario(@Param("usuario_id") int usuario_id, Pageable pageable);
 
+	
 	
 }

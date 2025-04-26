@@ -73,7 +73,9 @@ public class AuthConfig {
                 					 "/api-usuario/usuario-perfil",
                 					 "/api-usuario/update-usuario-perfil",
                                      "/api-inventario/find/zapatilla-marca-admin/{marca}",
-                                     "/api-inventario/find/fecha/{anio}").hasAnyAuthority("ROLE_USER");
+                                     "/api-inventario/find/fecha/{anio}",
+                                     "/api-inventario/find/fecha/rango",
+                                     "/api-inventario/find/precio/orden").hasAnyAuthority("ROLE_USER");
                 auth.requestMatchers("/api-inventario/**").authenticated();
                 
 

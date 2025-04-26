@@ -361,7 +361,96 @@ public class InventarioController {
 		}
 	}
 	
+	//Método para ordenar inventario por precio descendente
+	@GetMapping("/find/precio/orden")
+	public ResponseEntity<?> orderInvetarioByPrecio (@RequestParam ("orden") String orden,
+													 Authentication authentication){
+		
+		try {
+			
+			String username = authentication.getName();
+			
+			Optional<Usuario> optionalUsuario = usuarioService.obtenerUsuario(username);
+			
+			if (optionalUsuario.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			
+			Usuario usuario = optionalUsuario.get();
+			
+			List<Inventario> listInventario = inventarioService.orderInventarioByPrecio(usuario.getId(), orden);
+			
+			if (listInventario.isEmpty()) {
+				return new ResponseEntity<>(Map.of("mensaje", "No se encontró inventarios"), HttpStatus.BAD_REQUEST);
+			}
+			
+			logger.info("Inventario ordenado por precio OK !");
+			return new ResponseEntity<>(listInventario, HttpStatus.OK);
+			
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED); // 401
+
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para realizar esta acción", HttpStatus.FORBIDDEN); // 403
+
+		} catch (Exception e) {
+			logger.error("Error desconocido al editar inventario", e);
+			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
+		}
+	}
+	
+	//Método para filtrar inventario entre fechas
+	@GetMapping("/find/fecha/rango")
+	public ResponseEntity<?> getInventarioByFechaCompraBetween(@RequestParam ("fechaInicio") String fechaInicio,
+															   @RequestParam ("fechaFin") String fechaFin,
+															   Authentication authentication){
+		
+		try {
+			
+			String username = authentication.getName();
+			
+			Optional<Usuario> optionalUsuario = usuarioService.obtenerUsuario(username);
+			
+			if (optionalUsuario.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+						.body(Collections.singletonMap("message", "Usuario no encontrado"));
+			}
+			
+			Usuario usuario = optionalUsuario.get();
+			
+			if (fechaInicio == null || fechaFin == null) {
+				return new ResponseEntity<>(Map.of("error", "Por favor ingresar ambas fechas"), HttpStatus.BAD_REQUEST);
+			}
+			
+			List<Inventario> listInventario = inventarioService.findInventarioByFechaCompraBetween(fechaInicio, fechaFin, usuario.getId());
+			
+			if (listInventario.isEmpty()) {
+				return new ResponseEntity<>(Map.of("detalle", "No se encontraron inventarios entre el rango de fechas"), HttpStatus.NOT_FOUND);
+			}
+			
+			logger.info("Filtro de inventario entre fechas OK !");
+			return new ResponseEntity<>(listInventario, HttpStatus.OK);
+			
+		} catch (UsernameNotFoundException e) {
+			logger.error("Error: Usuario no encontrado", e);
+			return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED); // 401
+
+		} catch (AccessDeniedException e) {
+			logger.error("Error: Acceso denegado", e);
+			return new ResponseEntity<>("No tienes permisos para realizar esta acción", HttpStatus.FORBIDDEN); // 403
+
+		} catch (Exception e) {
+			logger.error("Error desconocido al editar inventario", e);
+			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
+		}
+	}
+	
+	/*
 	//Método para buscar inventario por fecha_compra (año)
+	//Este método no esta utilizando en el frontend
 	@GetMapping("/find/fecha/{anio}")
 	public ResponseEntity<?> getInventarioByFechaCompraAnio(@PathVariable("anio") int anio, Authentication authentication){
 		
@@ -400,6 +489,7 @@ public class InventarioController {
 			return new ResponseEntity<>("Error en el servidor", HttpStatus.INTERNAL_SERVER_ERROR); // 500
 		}
 	}
+	*/
 
 	// Método para obtener la cantidad de inventario que tiene un usuario
 	@GetMapping("/cantidad-inventario-usuario")
